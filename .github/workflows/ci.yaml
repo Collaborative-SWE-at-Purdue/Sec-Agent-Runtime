@@ -1,0 +1,10 @@
+name: ci
+
+on:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "The CI placeholder enforced branch freshness"
