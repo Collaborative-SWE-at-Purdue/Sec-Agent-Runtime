@@ -1,0 +1,27 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "clean-win": "rmdir /s /q dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}
