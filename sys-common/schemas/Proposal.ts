@@ -10,7 +10,7 @@ type ActionType = {};
 export interface AgentProposalStep {
   step_id: string; // step PK
   action: ActionType; // type of action proposed | comes from ActionType enum
-  target: string; // affected entity, e.g. filename, branch name, etc.
+  target: string; // affected entity, e.g. folder or filename
   destination?: string; // opt. for modifications (i.e. move/rename)
   content?: string; // opt. for write/create
   metadata?: Record<string, unknown>; // freeform field for extra info. Could do a minimal type.
