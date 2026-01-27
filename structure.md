@@ -44,12 +44,10 @@
 
 
     system-specs/				# System contracts (lang agnostic); diagrams
-    	- proposal_schema/
-    	- action-model/
-    	- policy-model/
-    	- state-model/
-    	- logging-model/
+    	- allowed_actions.md
+    	- schema_versioning.md
     	- invariants.md
+    	- etc.
 
     evaluation/					# Adversarial & metrics work (Python)
     	- adversarial/				# Representative bad proposals
@@ -69,10 +67,9 @@
     	- etc.
 
 
-    shared/						# Necessarily common definitions
-    	- constants/
-    	- ids/
-    	- versioning/
+    sys-common/					# Necessarily common defs, schemas, etc.
+    	- class-type				# Common classes and types
+    	- schemas					# Schemas used across the entire system
 
 
     scripts/					# dev, ci, etc.

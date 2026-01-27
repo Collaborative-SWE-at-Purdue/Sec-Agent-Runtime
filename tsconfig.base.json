@@ -1,12 +1,16 @@
-// base tsconfig
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "commonjs",
-    "strict": true,
-    "esModuleInterop": true,
+    "module": "ESNext", // Use standard ES module syntax
+    "moduleResolution": "node",
+    "esModuleInterop": true, // Allows default imports from CommonJS if needed
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "skipLibCheck": true,
-    "sourceMap": true
-  }
+    "verbatimModuleSyntax": false,
+    "resolveJsonModule": true
+  },
+  "include": ["runtime/src/**/*", "api/src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

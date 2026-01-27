@@ -4,5 +4,5 @@ export enum ActionType {
   READ_FILE = "READ_FILE",
   WRITE_FILE = "WRITE_FILE",
   THINK = "THINK",
-  FINISH = "FINISH"
+  FINISH = "FINISH",
 }
