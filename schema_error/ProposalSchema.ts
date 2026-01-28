@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ActionType } from "./ActionRegistry";
+import { ActionType } from "./ActionTypeRegistry";
 
 // Schema Versioning Strategy:
 const Base = z.object({
