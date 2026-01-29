@@ -6,6 +6,8 @@ const TEST_UUID = "00000000-0000-0000-0000-000000000000";
 
 describe("Agent Action Request Security & Validation", () => {
 
+    // Good Actions
+
   // Valid read operation
   it("should accept a valid READ_FILE proposal", () => {
     const validProposal = {
@@ -39,12 +41,47 @@ describe("Agent Action Request Security & Validation", () => {
     expect(result.success).toBe(true);
   });
 
+  // renaming valid extension
+  it("should accept renaming a file to an markdown (.md)", () => {
+    const validProposal = {
+      id: TEST_UUID,
+      schema_version: "1.0.0",
+      reasoning: "Renaming safe file to executable",
+      action: ActionType.RENAME_FILE,
+      args: {
+        source: "/sandbox/notes.txt",
+        destination: "/sandbox/notes.md" 
+      }
+    };
+
+    const result = AgentProposalSchema.safeParse(validProposal);
+    expect(result.success).toBe(true);
+  });
+
+  // delete valid extension
+  it("should accept deleting a file with a valid extension (.txt)", () => {
+    const validProposal = {
+      id: TEST_UUID,
+      schema_version: "1.0.0",
+      reasoning: "Deleting a file",
+      action: ActionType.DELETE_FILE,
+      args: {
+        path: "/sandbox/notes.txt"
+      }
+    };
+
+    const result = AgentProposalSchema.safeParse(validProposal);
+    expect(result.success).toBe(true);
+  });
+
+  // Bad Actions
+
   // write operation to invalid extension
-  it("should REJECT writing executable files (.sh)", () => {
+  it("should reject writing executable files (.sh)", () => {
     const attackProposal = {
       id: TEST_UUID,
       schema_version: "1.0.0",
-      reasoning: "I am trying to hack the system",
+      reasoning: "I am trying to run this script",
       action: ActionType.WRITE_FILE,
       args: {
         path: "/sandbox/malicious_script.sh",
@@ -57,7 +94,7 @@ describe("Agent Action Request Security & Validation", () => {
   });
 
   // renaming unsafe extension
-  it("should REJECT renaming a file to an executable (.exe)", () => {
+  it("should reject renaming a file to an executable (.exe)", () => {
     const attackProposal = {
       id: TEST_UUID,
       schema_version: "1.0.0",
@@ -73,15 +110,31 @@ describe("Agent Action Request Security & Validation", () => {
     expect(result.success).toBe(false);
   });
 
+  // delete invalid extension
+  it("should reject deleting a file with an invalid extension (.exe)", () => {
+    const attackProposal = {
+      id: TEST_UUID,
+      schema_version: "1.0.0",
+      reasoning: "Deleting an executable file",
+      action: ActionType.DELETE_FILE,
+      args: {
+        path: "/sandbox/virus.exe"
+      }
+    };
+
+    const result = AgentProposalSchema.safeParse(attackProposal);
+    expect(result.success).toBe(false);
+  });
+
   // Not starting with /sandbox/
-  it("should REJECT paths outside the sandbox", () => {
+  it("should reject paths outside the sandbox", () => {
     const attackProposal = {
       id: TEST_UUID,
       schema_version: "1.0.0",
       reasoning: "Reading system passwords",
       action: ActionType.READ_FILE,
       args: {
-        path: "/etc/random"
+        path: "/etc/password"
       }
     };
 

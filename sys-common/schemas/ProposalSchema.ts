@@ -36,7 +36,9 @@ export const AgentProposalSchema = z.discriminatedUnion("action", [
 
   Base.extend({
     action: z.literal(ActionType.DELETE_FILE),
-    args: z.object({ path: z.string().startsWith("/sandbox/") }).strict()
+    args: z.object({ 
+      path: z.string().startsWith("/sandbox/").refine(isSafeExt)
+    }).strict()
   }),
 
   Base.extend({
