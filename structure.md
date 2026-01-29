@@ -74,6 +74,8 @@
 
     scripts/					# dev, ci, etc.
 
+	sandbox/ 					# Where the LLM will be allowed to perform actions
+
 
     README.md
     LICENSE
