@@ -172,4 +172,32 @@ describe("Agent Action Request Security & Validation", () => {
     const result = AgentProposalSchema.safeParse(invalidProposal);
     expect(result.success).toBe(false);
   });
+
+  // Invalid UUID
+  it("should fail if 'id' is not a valid UUID", () => {
+    const invalidProposal = {
+      id: "invalid-uuid",
+      schema_version: "1.0.0",
+      reasoning: "Testing invalid UUID",
+      action: ActionType.READ_FILE,
+      args: { path: "/sandbox/test.txt" }
+    };
+
+    const result = AgentProposalSchema.safeParse(invalidProposal);
+    expect(result.success).toBe(false);
+  });
+
+  // Unsupported action
+  it("should fail if 'action' is unsupported", () => {
+    const invalidProposal = {
+      id: TEST_UUID,
+      schema_version: "1.0.0",
+      reasoning: "Testing unsupported action",
+      action: "UNSUPPORTED_ACTION",
+      args: { path: "/sandbox/test.txt" }
+    };
+
+    const result = AgentProposalSchema.safeParse(invalidProposal);
+    expect(result.success).toBe(false);
+  });
 });
