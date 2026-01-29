@@ -28,19 +28,35 @@ Every JSON received from the LLM shall follow the following schema:
 
 The ```args``` parameter shall follow the following constraints for each action type:
 
-Action:
-- THINK: 
+**Actions:**
+- **THINK**: 
     - ```args``` shall be empty ```{}```
 
-- FINISH: 
+- **FINISH**: 
     - ```args``` shall contain ```response``` string
 
-- READ_FILE: 
+**Read Operations:**
+- **READ_FILE**: 
     - ```args``` shall contain ```path```. ```path``` must start with ```/sandbox/```
 
-- WRITE_FILE: 
+- **LIST_FILES**:
+    - ```args``` shall contain ```path```. ```path``` must start with ```/sandbox/```
+
+**Write Operations (Strictly Validated):**
+- **WRITE_FILE**: 
     - ```args``` shall contain ```path```. ```path``` must start with ```/sandbox/``` and end with ```.txt``` or ```.md```
     - ```args``` shall contain ```content```. ```content``` must be a string with min length of 1 char
+
+- **CREATE_DIRECTORY**:
+    - ```args``` shall contain ```path```. ```path``` must start with ```/sandbox/```
+
+**Destructive Operations (High Risk):**
+- **DELETE_FILE**:
+    - ```args``` shall contain ```path```. ```path``` must start with ```/sandbox/``` and end with ```.txt``` or ```.md``` to prevent deletion of executables.
+
+- **RENAME_FILE**:
+    - ```args``` shall contain ```source```. ```source``` must start with ```/sandbox/```
+    - ```args``` shall contain ```destination```. ```destination``` must start with ```/sandbox/``` and end with ```.txt``` or ```.md```.
 
 The following is an example of the schema the LLM must follow:
 

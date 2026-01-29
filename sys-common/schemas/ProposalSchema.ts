@@ -47,7 +47,22 @@ export const AgentProposalSchema = z.discriminatedUnion("action", [
       source: z.string().startsWith("/sandbox/"),
       destination: z.string().startsWith("/sandbox/").refine(isSafeExt)
     }).strict()
-  })
+  }),
+
+  Base.extend({
+    action: z.literal(ActionType.CREATE_DIRECTORY),
+    args: z.object({
+      path: z.string().startsWith("/sandbox/")
+    }).strict()
+  }),
+
+  Base.extend({
+    action: z.literal(ActionType.LIST_FILES),
+    args: z.object({ 
+      path: z.string().startsWith("/sandbox/")
+    }).strict()
+  }),
+
 ]);
 
 export type AgentProposal = z.infer<typeof AgentProposalSchema>;
