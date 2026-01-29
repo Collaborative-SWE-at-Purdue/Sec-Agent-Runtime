@@ -28,3 +28,9 @@ npm install zod
 ```Bash
 npm install -D typescript vitest @types/node
 ```
+
+3. Ensure Zod dependencies are in the correct location
+
+```bash
+npm install zod --save-prod
+```
