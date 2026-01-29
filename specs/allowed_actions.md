@@ -41,6 +41,7 @@ Allowed actions:
 - THINK
 - FINISH
 - READ_FILE
+- WRITE_FILE
 
 ##### prototype v2, Read/Write operations:
 
@@ -60,8 +61,13 @@ Allowed actions:
 - THINK
 - FINISH
 - READ_FILE
+- WRITE_FILE
+- DELETE_FILE
+- RENAME_FILE
+- LIST_FILES 
+- CREATE_DIRECTORY
 
 Possible Stress Tests, Expectation is for these to be denied:
-- DELETE_FILE
+- CURL
 - NETWORK_CONNECT
 - EXECUTE_CODE
