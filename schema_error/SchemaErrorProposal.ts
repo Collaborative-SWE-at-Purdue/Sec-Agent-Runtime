@@ -31,6 +31,16 @@ const ErrorCodes = z.enum([
 
 
 //Primary Schema Export Structure
-export const SchemaErrorProposalSchema = z.object({
+
+//Schema validtion model
+const base = z.object({
+    version: SchemaVersion,
+    action: "error_code",
+    path: SchemaPath
+
+})
+export const SchemaErrorVal = z.object({
     
-}))
+})
+
+export type ErrorVal = z.infer<typeof SchemaErrorVal>
