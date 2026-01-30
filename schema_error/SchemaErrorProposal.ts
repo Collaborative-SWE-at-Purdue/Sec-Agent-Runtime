@@ -27,20 +27,35 @@ const ErrorCodes = z.enum([
     
     //Other Errors
     "UNKNOWN_ERROR"
-])
+]);
 
 
 //Primary Schema Export Structure
 
 //Schema validtion model
-const base = z.object({
+const BaseError = z.object({
     version: SchemaVersion,
-    action: "error_code",
+    action: "error_validation",
     path: SchemaPath
 
-})
-export const SchemaErrorVal = z.object({
-    
-})
+});
+export const SchemaErrorVal = z.discriminatedUnion( "action", [ 
+    //Schema Validation Errors - All will include "Unknown"
+    BaseError.extend({
+        action: ActionType.THINK,
+        args:{ 
+          //  code:    
+        }
+    })
+    //Read and Inspection Errors
 
-export type ErrorVal = z.infer<typeof SchemaErrorVal>
+    //State Modification Errors 
+
+    //High Risk Operation Errors 
+
+
+
+
+]);
+
+export type ErrorVal = z.infer<typeof SchemaErrorVal>;
