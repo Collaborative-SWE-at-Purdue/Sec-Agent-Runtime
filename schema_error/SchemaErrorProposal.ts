@@ -1,42 +1,15 @@
 import * as z from "zod";
 import { ActionType } from "../schema_error/ActionTypeRegistry.js";
-import path from "path/win32";
+import { ErrorId } from "../schema_error/ErrorTypeRegistry.js"
+//import path from "path/win32";
 
-
-//error response types 
-export enum ErrorId {
-  // Schema Validation
-  PATH_MISSING = "PATH_MISSING",
-  PATH_NOT_STRING = "PATH_NOT_STRING",
-  PATH_OUT_OF_BOUNDS = "PATH_OUT_OF_BOUNDS",
-
-  // Read & Inspection
-  PATH_NOT_FOUND = "PATH_NOT_FOUND",
-  IS_DIRECTORY = "IS_DIRECTORY",
-  NOT_A_DIRECTORY = "NOT_A_DIRECTORY",
-
-  // State Modification
-  ALREADY_EXISTS = "ALREADY_EXISTS",
-  DISK_FULL = "DISK_FULL",
-  IO_ERROR = "IO_ERROR",
-
-  // High-Risk Operations
-  FILE_NOT_FOUND = "FILE_NOT_FOUND",
-  PERMISSION_DENIED = "PERMISSION_DENIED",
-  TARGET_ALREADY_EXISTS = "TARGET_ALREADY_EXISTS",
-
-  // Fallback
-  UNKNOWN_ERROR = "UNKNOWN_ERROR"
-}
-
-//Primary Schema Export Structure
 
 //Schema validtion Base Model
 const BaseError = z.object({
     version: z.string().regex(/^1\.\d+\.\d+$/),
     action: "error_validation",
     timestamp:z.coerce.date(),
-    path: z.string().startsWith("/sandbox/"),
+    path: z.string().startsWith("/sandbox/") || z.string().endsWith(".md"),
     id: z.string().uuid().default(() => crypto.randomUUID()),
     explanation: z.string().min(1),
     
