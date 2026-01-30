@@ -25,3 +25,5 @@ In addition to industry standard software engineering practices, these projects 
 | Evan Berendt&nbsp;&nbsp;&nbsp;  | epbehren3 &nbsp;       | https://www.linkedin.com/in/evan-behrendt-7a0046152/    |
 | Ting-Chia Liu&nbsp;&nbsp;&nbsp; | Lucy0918               | https://www.linkedin.com/in/tingchia-liu/               |
 </br>
+
+## Before collaborting, please read the [docs](/docs) and [system-specs](/system-specs)
