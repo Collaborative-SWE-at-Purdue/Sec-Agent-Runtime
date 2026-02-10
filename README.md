@@ -1,14 +1,67 @@
 # A Security-Constrained Agent Runtime
-This is the repository behind a security-constrained agent runtime, which aims to build a security-constrained agent runtime that deterministically mediates between an LLM and real tools. <br/>
-The runtime will accomplish this in 2 ways:
-  1. Enforcing explicit policies
-  2. Enabling systematic verification.
+
+This repository contains the **Agent Runtime**: a security-constrained execution environment that deterministically mediates between a Large Language Model (LLM) and real-world tools.
+
+The runtime enforces safety and correctness through two core mechanisms:
+1. **Explicit policy enforcement** over agent actions
+2. **Systematic verification hooks** that enable analysis, auditing, and replay
+
+The runtime is designed to act as a strict boundary between untrusted agent intent and trusted system execution.
 
 <br/>
 
-# Collaborative SWE @ Purdue -- Shared Repository Hosting 
-Student-run software engineering projects developed as part of coursework at Purdue Univeristy.
-In addition to industry standard software engineering practices, these projects emphasize meaningful collaboration between developers.
+---
+
+## Getting Started
+
+Before contributing, please read:
+- the [documentation](/docs)
+- the [system specifications](/system-specs)
+
+These documents define the runtime’s trust boundaries, proposal model, and execution guarantees.
+
+<br/>
+
+---
+
+## Repository Structure & Related Projects
+
+This project is intentionally split across **two repositories**, each with a distinct responsibility.
+
+### Agent Runtime (this repository)
+- Implements the core runtime logic
+- Defines the agent proposal envelope and handling pipeline
+- Performs validation, policy evaluation, and controlled action execution
+- Produces structured logs and execution outcomes
+
+This repository is the **system under test**.
+
+### SARE — Secure Agent Runtime Evaluations
+Evaluation, simulation, and analysis tooling for the Agent Runtime live in a **separate repository**.
+
+SARE provides:
+- adversarial and malformed proposal testing
+- multi-agent and conflict simulations
+- performance benchmarking
+- structured log ingestion, metrics, and reporting
+
+The separation keeps the runtime implementation clean while allowing evaluation tooling to evolve independently.
+
+➡️ **SARE repository:**  
+*https://github.com/Collaborative-SWE-at-Purdue/Sec-Agent-Runtime*
+
+<br/>
+
+---
+
+## Collaborative SWE @ Purdue — Shared Repository Hosting
+
+Student-run software engineering projects developed as part of coursework at Purdue University.
+
+In addition to industry-standard software engineering practices, these projects emphasize:
+- clear architectural boundaries,
+- explicit responsibility ownership,
+- and meaningful collaboration between developers.
 
 <br/>
 
@@ -16,14 +69,13 @@ In addition to industry standard software engineering practices, these projects 
 
 <br/>
 
-### **Agent Runtime Team | ECE 50874 / ECE 595 - Spring 2026**
+---
 
-| **Developer**                   | **GitHub Username**    | **LinkedIn Profile**
-|---------------------------------|------------------------|---------------------------------------------------------|
-| Dorian Bell II&nbsp;&nbsp;&nbsp;| BellJrDev              | https://www.linkedin.com/in/belljrdev/                  |
-| Kevin Rivera&nbsp;&nbsp;&nbsp;  | Nimuar                 | https://www.linkedin.com/in/krivera53/                  |
-| Evan Berendt&nbsp;&nbsp;&nbsp;  | epbehren3 &nbsp;       | https://www.linkedin.com/in/evan-behrendt-7a0046152/    |
-| Ting-Chia Liu&nbsp;&nbsp;&nbsp; | Lucy0918               | https://www.linkedin.com/in/tingchia-liu/               |
-</br>
+### **Agent Runtime Team | ECE 50874 / ECE 595 — Spring 2026**
 
-## Before collaborting, please read the [docs](/docs) and [system-specs](/system-specs)
+| **Developer**                   | **GitHub Username** | **LinkedIn Profile**                                      |
+|---------------------------------|---------------------|-------------------------------------------------------------|
+| Dorian Bell II                  | BellJrDev           | https://www.linkedin.com/in/belljrdev/                      |
+| Kevin Rivera                    | Nimuar              | https://www.linkedin.com/in/krivera53/                      |
+| Evan Berendt                    | epbehren3           | https://www.linkedin.com/in/evan-behrendt-7a0046152/        |
+| Ting-Chia Liu                   | Lucy0918            | https://www.linkedin.com/in/tingchia-liu/                   |
