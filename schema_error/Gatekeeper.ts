@@ -5,7 +5,7 @@ import { filter } from "../schema_error/GateRegistry.js"
 
 
 //Checked Path in Initial Review
-const InvalidASCII = (val: string) => z.string().regex(/^[\x00-\x7F]*$/)(val);
+const InvalidASCII = (val: string) => z.string().regex(/^[\x00-\x7F]*$/);
 
 //Schema validtion Base Model
 const Base = z.object({
