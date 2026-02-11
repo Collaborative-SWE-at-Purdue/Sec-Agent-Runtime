@@ -29,8 +29,9 @@ export const GateList = z.discriminatedUnion("ErrorId", [
     Base.extend({
         ErrorId: z.literal(filter.WHITE_SPACE),
         args: z.object({
-            condition: z.string().trim().includes(" "),
-            message: "Cannot contain whitespace characters"
+            condition: z.string().trim().includes(" ",{
+                message: "Cannot contain whitespace characters"
+            })
         }).strict()
     }),
     //INVALID ASCII CHECK
@@ -46,7 +47,8 @@ export const GateList = z.discriminatedUnion("ErrorId", [
     Base.extend({
         ErrorId: z.literal(filter.PAYLOAD_OVERFLOW),
         args: z.object({
-            condition: z.string().max(1024, "Payload exceeds maximum size of 1024 characters"),
+            condition: z.string().max(1024, 
+                {message: "Payload exceeds maximum size of 1024 characters"}),
         }).strict()
     }),
     //ID COLLISION CHECK
@@ -57,7 +59,7 @@ export const GateList = z.discriminatedUnion("ErrorId", [
             backlog:  z.string().trim(),
         }).strict().refine((output) => output.incoming === output.backlog,
            {
-            message: "ID matches"
+            message: "ID matches with previous proposal ID"
            } 
         
         )
@@ -66,8 +68,15 @@ export const GateList = z.discriminatedUnion("ErrorId", [
     Base.extend({
         ErrorId: z.literal(filter.INVALID_PROPOSAL),
         args: z.object({
-            condition: z.string().min(1),
-            message: "Proposal failed schema validation. See 'reasoning' for details."
-        }).strict()
-    })
+            action: z.string().min(1), 
+            version: z.string().min(1),
+            id: z.string().min(1),
+            args:z.any()
+        })
+        .strict()
+        .refine(
+            (min) => (min.action && min.version && min.id && min.args),{
+            message: "Schema failed structure, please check to make sure all areas are filled before submitting"
+        })
+     })
 ]);

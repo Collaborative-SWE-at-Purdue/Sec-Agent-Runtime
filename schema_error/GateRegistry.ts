@@ -1,6 +1,6 @@
 //Error type examples
 
-
+//Checked Path in Initial Review
 //\0 check, Null Byte Exists 
 //Trim for whitespace 
 //Non Printable ASCII Characters 
@@ -19,7 +19,7 @@ export enum filter {
  INVALID_ASCII = "INVALID ASCII",
  PAYLOAD_OVERFLOW = "PAYLOAD_OVERFLOW",
  ID_COLLISION = "ID_COLLISION",
- INVALID_PROPOSAL = "INVALID_PROPOSAL"
-
+ INVALID_PROPOSAL = "INVALID_PROPOSAL",
+ MISSING_CONTENT = "MISSING_CONTENT"
 }
 
