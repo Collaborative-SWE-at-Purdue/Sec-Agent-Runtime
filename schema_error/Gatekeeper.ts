@@ -4,8 +4,7 @@ import { filter } from "../schema_error/GateRegistry.js"
 //import path from "path/win32";
 
 
-//Checked Path in Initial Review
-const InvalidASCII = (val: string) => z.string().regex(/^[\x00-\x7F]*$/);
+const ValidASCII = /^[ -~]*$/;
 
 //Schema validtion Base Model
 const Base = z.object({
@@ -38,8 +37,8 @@ export const GateList = z.discriminatedUnion("ErrorId", [
     Base.extend({
         ErrorId: z.literal(filter.INVALID_ASCII),
         args: z.object({
-            condition: z.string().trim().refine(InvalidASCII, {
-                message: "Cannot contain non-ASCII characters"
+            condition: z.string().trim().regex(ValidASCII, {
+                message: "Cannot contain invalid-ASCII characters"
             }),
         }).strict()
     }),
@@ -54,9 +53,14 @@ export const GateList = z.discriminatedUnion("ErrorId", [
     Base.extend({
         ErrorId: z.literal(filter.ID_COLLISION),
         args: z.object({
-            condition: z.number().int().positive(),
-            message: "ID collision detected. Number of collisions: {condition}"
-        })
+            incoming: z.string().trim(),
+            backlog:  z.string().trim(),
+        }).strict().refine((output) => output.incoming === output.backlog,
+           {
+            message: "ID matches"
+           } 
+        
+        )
     }),
     //INVALID PROPOSAL CHECK - Catch all other schema validation errors and return as INVALID PROPOSAL
     Base.extend({
