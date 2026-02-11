@@ -1,44 +1,48 @@
 import * as z from "zod";
-import { ActionType } from "../sys-common/ActionTypeRegistry.js";
-import { ErrorId } from "../schema_error/CGateRegistry.js"
+import { ErrorId } from "../schema_error/GateRegistry.js"
 //import path from "path/win32";
 
 
 //Checked Path in Initial Review
-const ASCIISchema = z.string().regex(/^[\x00-\x7F]*$/);
+const InvalidASCII = z.string().regex(/^[\x00-\x7F]*$/);
 
 //Schema validtion Base Model
 const Base = z.object({
     version: z.string().regex(/^1\.\d+\.\d+$/),
     timestamp:z.coerce.date(),
     id: z.string().uuid().default(() => crypto.randomUUID()),
-    explanation: z.string().min(1),
+    input: z.string().min(1).trim(),
 
 });
 
 
-const WhiteList = z.discriminatedUnion("ErrorId", [
-
+export const GateList = z.discriminatedUnion("ErrorId", [
+    //NULL SPACE CHECK
     Base.extend({
         ErrorId: z.literal(filter.NULL_BYTE),
-        args: z.string().refine((val) => !val.includes("\0"),{
+        args: z.string().trim().refine((val) => !val.includes("\0"),{
             message: "Cannot be in null bytes"
         })
     }).strict(),
 
-
-
-
-
-
-
+    //WHITE SPACE CHECK
+    Base.extend({
+        ErrorId: z.literal(filter.WHITE_SPACE),
+        args: z.string().trim().refine((val) => !val.includes(" "),{
+            message: "Cannot have white space in proposal"
+        })
+    }).strict(),
+    //ASCII CHECK
+       Base.extend({
+        ErrorId: z.literal(filter.WHITE_SPACE),
+        args: z.string().trim().refine((val) => !val.includes(" "),{
+            message: "Cannot have invalid ASCII, please fix and resubmit"})
+        }).strict(),
 
 ])
 
 
-cosnt BaseExtend = z.object({
     
-    
+export type AgentProposal = z.infer<typeof GateList>;
 
 
-})
