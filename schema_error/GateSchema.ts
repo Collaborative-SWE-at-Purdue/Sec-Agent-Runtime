@@ -1,6 +1,6 @@
 
 import * as z from "zod";
-import { filter } from "../schema_error/GateRegistry.js"
+import { filter } from "./GateRegistry.js"
 //import path from "path/win32";
 //test
 
@@ -9,10 +9,8 @@ const ValidASCII = /^[ -~]*$/;
 //Schema validtion Base Model
 const Base = z.object({
     version: z.string().regex(/^1\.\d+\.\d+$/),
-    timestamp:z.coerce.date(),
     id: z.string().uuid().default(() => crypto.randomUUID()),
     input: z.string().min(1).trim(),
-
 });
 
 
