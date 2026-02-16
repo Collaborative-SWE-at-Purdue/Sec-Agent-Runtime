@@ -1,5 +1,5 @@
 import { describe, it, expect, should } from "vitest";
-import { GateList } from "../GateSchema.js";
+import { GateList } from "../ProposalErrorSchema.js";
 import { filter } from "../ProposalErrorRegistry.js";
 
 // Test UUID 

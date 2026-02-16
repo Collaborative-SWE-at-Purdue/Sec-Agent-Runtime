@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { ActionType } from "../sys-common/schemas/ActionTypeRegistry.js";
-import { ErrorId } from "../schema_error/ErrorTypeRegistry.js"
+import { ErrorId } from "./RunTimeErrorRegistry.js"
 //import path from "path/win32";
 
 //POSTPONE UNTIL PHASE 4
