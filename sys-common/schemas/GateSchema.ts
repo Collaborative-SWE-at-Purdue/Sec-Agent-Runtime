@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { filter } from "../sys-common/schemas/GateRegistry.js"
+import { filter } from "./GateRegistry.js"
 
 const ValidASCII = /^[ -~]*$/;
 
@@ -15,7 +15,7 @@ export const GateList = z.discriminatedUnion("ErrorId", [
     Base.extend({
         ErrorId: z.literal(filter.NULL_BYTE),
         args: z.object({
-            message: z.string()
+            message: z.literal("Cannot contain null byte characters")
         }).strict()
     }),
 
@@ -23,7 +23,7 @@ export const GateList = z.discriminatedUnion("ErrorId", [
     Base.extend({
         ErrorId: z.literal(filter.INVALID_ASCII),
         args: z.object({
-            message: z.string()
+            message: z.literal("Cannot contain invalid ASCII characters")
         }).strict()
     }),
 
@@ -33,7 +33,7 @@ export const GateList = z.discriminatedUnion("ErrorId", [
         args: z.object({
             size: z.number(), // Actual size in bytes
             limit: z.number(), // Maximum allowed size
-            message: z.string()
+            message: z.literal("Payload exceeds maximum size of 1024 characters")
         }).strict()
     }),
 
@@ -43,7 +43,7 @@ export const GateList = z.discriminatedUnion("ErrorId", [
         args: z.object({
             incoming: z.string().uuid(), // ID from the incoming proposal
             backlog: z.string().uuid(), // ID from backlog database. 
-            message: z.string()
+            message: z.literal("ID matches with previously logged proposal ID")
         }).strict()
     }),
 
@@ -53,7 +53,16 @@ export const GateList = z.discriminatedUnion("ErrorId", [
         ErrorId: z.literal(filter.MISSING_CONTENT),
         args: z.object({
             field: z.string(), // Which field is missing
-            message: z.string() // Description of the missing content
+            message: z.literal("Required field is missing or empty") // Description of the missing content
+        }).strict()
+    }),
+
+    //Invalid Content Check - Catchall
+     Base.extend({
+        ErrorId: z.literal(filter.INVALID_CONTENT),
+        args: z.object({
+            field: z.string(), // Which field is missing
+            message: z.literal("Required field is Invalid") // Description of the missing content
         }).strict()
     })
 ]);
