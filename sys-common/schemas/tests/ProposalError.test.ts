@@ -1,6 +1,6 @@
 import { describe, it, expect, should } from "vitest";
 import { GateList } from "../GateSchema.js";
-import { filter } from "../GateRegistry.js";
+import { filter } from "../ProposalErrorRegistry.js";
 
 // Test UUID 
 const TEST_UUID = "00000000-0000-0000-0000-000000000000";

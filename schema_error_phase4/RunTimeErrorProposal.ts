@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { ActionType } from "../schema_error/ActionTypeRegistry.js";
+import { ActionType } from "../sys-common/schemas/ActionTypeRegistry.js";
 import { ErrorId } from "../schema_error/ErrorTypeRegistry.js"
 //import path from "path/win32";
 
