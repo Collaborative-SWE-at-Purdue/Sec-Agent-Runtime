@@ -27,7 +27,7 @@ describe("Gate Schema Validation", () => {
        it("Should accept a INVALID_ASCII Error response", () => {
         const validError = { 
             id: TEST_UUID,
-            schema_schema_version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Original proposal that failed validation",
             ErrorId: filter.INVALID_ASCII,
             args: {
