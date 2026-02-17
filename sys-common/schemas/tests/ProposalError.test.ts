@@ -13,7 +13,7 @@ describe("Gate Schema Validation", () => {
     it("Should accept an invalid NULL_BYTE response", () => {
         const validError = { 
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Original proposal that failed validation",
             ErrorId: filter.NULL_BYTE,
             args: {
@@ -27,7 +27,7 @@ describe("Gate Schema Validation", () => {
        it("Should accept a INVALID_ASCII Error response", () => {
         const validError = { 
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_schema_version: "1.0.0",
             input: "Original proposal that failed validation",
             ErrorId: filter.INVALID_ASCII,
             args: {
@@ -41,7 +41,7 @@ describe("Gate Schema Validation", () => {
     it("Should accept a PAYLOAD_OVERFLOW Error response", () => {
         const validError = { 
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Original proposal that failed validation",
             ErrorId: filter.PAYLOAD_OVERFLOW,
             args: {
@@ -57,7 +57,7 @@ describe("Gate Schema Validation", () => {
     it("Should accept an ID_COLLISION Error response", () => {
         const validError = { 
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Original proposal that failed validation",
             ErrorId: filter.ID_COLLISION,
             args: {
@@ -73,7 +73,7 @@ describe("Gate Schema Validation", () => {
     it("Should accept a MISSING_CONTENT Error response", () => {
         const validError = { 
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Original proposal that failed validation",
             ErrorId: filter.MISSING_CONTENT,
             args: {
@@ -87,7 +87,7 @@ describe("Gate Schema Validation", () => {
    it("Should accept a INVALID_CONTENT Error response", () => {
         const validError = { 
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Original proposal that failed validation",
             ErrorId: filter.INVALID_CONTENT,
             args: {
@@ -100,10 +100,10 @@ describe("Gate Schema Validation", () => {
     });
 
     //Invalid Tests
-    it("should vaild if version is wrong format", () => {
+    it("should vaild if schema_version is wrong format", () => {
         const invalidError = { 
             id: TEST_UUID,
-            version: "v1.0", // Invalid version format
+            schema_version: "v1.0", // Invalid schema_version format
             input: "Invalid Verison Format",
             ErrorId: filter.NULL_BYTE,
             args: {
@@ -116,7 +116,7 @@ describe("Gate Schema Validation", () => {
     it("should fail if 'id' is not a valid UUID", () => {
         const invalidError = { 
             id: "invalid-uuid",
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Invalid UUID Format",
             ErrorId: filter.NULL_BYTE,
             args: {
@@ -130,7 +130,7 @@ describe("Gate Schema Validation", () => {
     it("should fail if 'input' is empty", () => {     
         const invalidError = { 
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "", // Empty input
             ErrorId: filter.NULL_BYTE,
             args: {
@@ -144,7 +144,7 @@ describe("Gate Schema Validation", () => {
      it("should fail if ErrorId is invalid", () => {
         const invalidError = { 
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Invalid ErrorId",
             ErrorId: "UNKNOWN_ERROR", // Invalid ErrorId
             args: {
@@ -158,7 +158,7 @@ describe("Gate Schema Validation", () => {
     it("Should fail if args are wrong for Payload overflow", () => {
         const invalidError = {
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Invalid args for PAYLOAD_OVERFLOW",
             ErrorId: filter.PAYLOAD_OVERFLOW,
              args: {
@@ -173,7 +173,7 @@ describe("Gate Schema Validation", () => {
     it("Should fail if args are missing for Payload overflow", () => {
         const invalidError = {
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Invalid args for PAYLOAD_OVERFLOW",
             ErrorId: filter.PAYLOAD_OVERFLOW,
              args: { 
@@ -187,7 +187,7 @@ describe("Gate Schema Validation", () => {
      it("Should fail if args are wrong for ID_COLLISION", () => {
         const invalidError = {
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Invalid args for ID_COLLISION",
             ErrorId: filter.ID_COLLISION,
              args: {
@@ -202,7 +202,7 @@ describe("Gate Schema Validation", () => {
           it("Should fail if args are wrong for ID_COLLISION", () => {
         const invalidError = {
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Invalid args for ID_COLLISION",
             ErrorId: filter.ID_COLLISION,
              args: {
@@ -217,7 +217,7 @@ describe("Gate Schema Validation", () => {
      it ("Should fail if data type is wrong for MISSING_CONTENT", () => {
         const invalidError = {
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Invalid args for MISSING_CONTENT",
             ErrorId: filter.MISSING_CONTENT,
              args: {
@@ -231,7 +231,7 @@ describe("Gate Schema Validation", () => {
      it ("Should fail if data type is missing for MISSING_CONTENT", () => {
         const invalidError = {
             id: TEST_UUID,
-            version: "1.0.0",
+            schema_version: "1.0.0",
             input: "Invalid args for MISSING_CONTENT",
             ErrorId: filter.MISSING_CONTENT,
              args: {
