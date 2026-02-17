@@ -5,7 +5,7 @@ const ValidASCII = /^[ -~]*$/;
 
 // Base structure for validation error responses sent back to agent
 const Base = z.object({
-    version: z.string().regex(/^1\.\d+\.\d+$/),
+    schema_version: z.string().regex(/^1\.\d+\.\d+$/),
     id: z.string().uuid().default(() => crypto.randomUUID()),
     input: z.string().min(1), // Original proposal that failed validation
 });
