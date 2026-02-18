@@ -67,20 +67,52 @@ function validatePayloadSize(proposal: string) {
 
 //Check for ID Collision
 //WIP to check proposal ID against backlog. 
-function ValidateIDCollision (proposalID: string) {
+function ValidateIDCollision (proposal: string) {
 
-    if (backlogIDs.includes(proposalID)) {
+    if (backlogIDs.includes(proposal)) {
         return { 
             schema_version: schema_version,
             id: crypto.randomUUID(),
-            input: proposalID,
+            input: proposal,
             ErrorId: filter.ID_COLLISION,
             args: {
-                incoming: proposalID,
-                backlog: backlogIDs.find(id => id === proposalID) || "",
+                incoming: proposal,
+                backlog: backlogIDs.find(id => id === proposal) || "",
                 message: "ID matches with previously logged proposal ID"
             }
         }
     }
 };
+
+
+
+//Check for invalid strucure.
+
+function ValidateCoreStructure(proposal:string) {
+    const missing_fields: (string | number) [] = []
+        //Check for missing or empty sections. 
+        for(let i = 0; i < ){
+        
+            if( || key === ""){
+                missing_fields.push(key);
+            }
+        }
+    //If array contains missing fields
+
+    if(missing_fields.length() > 0){
+        const missing_string: string = missing_fields.toString();
+        return { 
+            schema_version: schema_version,
+            id: crypto.randomUUID(),
+            input: proposal,
+            ErrorId: filter.MISSING_CONTENT,
+            args: {
+                fields: missing_string,
+                message: "Required field is missing or empty"
+            }
+        }
+
+    }
+
+}
 

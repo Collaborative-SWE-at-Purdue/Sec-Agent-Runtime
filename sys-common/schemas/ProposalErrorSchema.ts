@@ -1,7 +1,6 @@
 import * as z from "zod";
-import { filter } from "./ProposalErrorConfig.js"
+import { filter } from "./ProposalErrorRegistry.js"
 
-const ValidASCII = /^[ -~]*$/;
 
 // Base structure for validation error responses sent back to agent
 const Base = z.object({
@@ -52,7 +51,7 @@ export const GateList = z.discriminatedUnion("ErrorId", [
     Base.extend({
         ErrorId: z.literal(filter.MISSING_CONTENT),
         args: z.object({
-            field: z.string(), // Which field is missing
+            field:  z.string(), // Which field is missing
             message: z.literal("Required field is missing or empty") // Description of the missing content
         }).strict()
     }),
@@ -62,7 +61,7 @@ export const GateList = z.discriminatedUnion("ErrorId", [
         ErrorId: z.literal(filter.INVALID_CONTENT),
         args: z.object({
             field: z.string(), // Which field is missing
-            message: z.literal("Required field is Invalid") // Description of the missing content
+            message: z.literal("Required ${fields} is Invalid") // Description of the missing content
         }).strict()
     })
 ]);
