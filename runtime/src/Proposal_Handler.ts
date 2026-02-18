@@ -1,11 +1,11 @@
 import * as z from "zod";
-import { filter } from "../../sys-common/schemas/ProposalErrorRegistry.js";
+import { filter,valid_ascii, proposal_limit, schema_version } from "../../sys-common/schemas/ProposalErrorConfig.js";
 import { GateList } from "../../sys-common/schemas/ProposalErrorSchema.js";
+import { text } from "node:stream/consumers";
 
 
 //Proposal Error handling logic for incoming proposals.
 //This should be done in Typescript PascalCase for better readability and maintainability.
-const ValidASCII = /^[ -~]*$/;
 
 
 function ValidateProposal(proposal: string) {
@@ -20,7 +20,7 @@ function ValidateProposal(proposal: string) {
  function ValidateNullByte(proposal: string) {  
      if (proposal.includes("\0")) {
         return { 
-            schema_version: "1.0.0",
+            schema_version: schema_version,
             id: crypto.randomUUID(),
             input: proposal,
             ErrorId: filter.NULL_BYTE,
@@ -29,17 +29,58 @@ function ValidateProposal(proposal: string) {
             }
         };
     }
- }
+ };
     // Check for valid ASCII characters
-    if (!ValidASCII.test(proposal)) {
+function ValidateASCII(proposal: string) {
+    if (!valid_ascii.test(proposal)) {
         return { 
-            schema_version: "1.0.0",
+            schema_version: schema_version,
             id: crypto.randomUUID(),
             input: proposal,
             ErrorId: filter.INVALID_ASCII,
             args: {
                 message: "Cannot contain invalid ASCII characters"
             }
-        };
+        }
+        
+    }
+};
+// Check for payload size
+function validatePayloadSize(proposal: string) {
+    //Convert Proposal to bytes
+    const ProposalByteSize = (str:string) => new TextEncoder().encode(str).length;
+    //Check if proposal exceeds limit
+    if (ProposalByteSize(proposal) > proposal_limit ) {
+        return { 
+            schema_version: schema_version,
+            id: crypto.randomUUID(),
+            input: proposal,
+            ErrorId: filter.PAYLOAD_OVERFLOW,
+            args: {
+                size: ProposalByteSize(proposal),
+                limit: 1024,
+                message: "Payload exceeds maximum size of 1024 characters"
+                }
+        }
+    }
+};
 
-    
+//Check for ID Collision
+//WIP to check proposal ID against backlog. 
+function ValidateIDCollision (proposalID: string) {
+
+    if (backlogIDs.includes(proposalID)) {
+        return { 
+            schema_version: schema_version,
+            id: crypto.randomUUID(),
+            input: proposalID,
+            ErrorId: filter.ID_COLLISION,
+            args: {
+                incoming: proposalID,
+                backlog: backlogIDs.find(id => id === proposalID) || "",
+                message: "ID matches with previously logged proposal ID"
+            }
+        }
+    }
+};
+

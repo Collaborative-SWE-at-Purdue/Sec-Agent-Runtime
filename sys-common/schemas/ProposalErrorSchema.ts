@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { filter } from "./ProposalErrorRegistry.js"
+import { filter } from "./ProposalErrorConfig.js"
 
 const ValidASCII = /^[ -~]*$/;
 
