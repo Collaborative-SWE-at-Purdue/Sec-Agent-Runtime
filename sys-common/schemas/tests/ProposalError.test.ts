@@ -1,9 +1,9 @@
 import { describe, it, expect, should } from "vitest";
 import { GateList } from "../ProposalErrorSchema.js";
-import { filter } from "../ProposalErrorConfig.js";
+import { filter,TEST_UUID } from "../ProposalErrorConfig.js";
+
 
 // Test UUID 
-const TEST_UUID = "00000000-0000-0000-0000-000000000000";
 
 
 

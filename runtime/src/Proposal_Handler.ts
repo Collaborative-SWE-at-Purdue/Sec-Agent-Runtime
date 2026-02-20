@@ -1,7 +1,8 @@
 import * as z from "zod";
-import { filter,valid_ascii, proposal_limit, schema_version } from "../../sys-common/schemas/ProposalErrorConfig.js";
+import { filter,valid_ascii, proposal_limit, schema_version, TEST_UUID } from "../../sys-common/schemas/ProposalErrorConfig.js";
 import { GateList } from "../../sys-common/schemas/ProposalErrorSchema.js";
-import { text } from "node:stream/consumers";
+import {AgentProposalSchema} from "../../sys-common/schemas/ProposalSchema.js"
+import { Agent } from "node:http";
 
 
 //Proposal Error handling logic for incoming proposals.
@@ -67,7 +68,12 @@ function validatePayloadSize(proposal: string) {
 
 //Check for ID Collision
 //WIP to check proposal ID against backlog. 
+/*Right now I will just have it check an empty file, 
+but eventually this should be checking against a 
+database/logfile of logged proposal IDs.*/
+
 function ValidateIDCollision (proposal: string) {
+    const backlogIDs: string[] = [TEST_UUID]; // This should be replaced with actual backlog data source
 
     if (backlogIDs.includes(proposal)) {
         return { 
@@ -89,18 +95,24 @@ function ValidateIDCollision (proposal: string) {
 //Check for invalid strucure.
 
 function ValidateCoreStructure(proposal:string) {
+    //Missing Fields Check - Our Schema is only comprised of strings and numbers ATP.
     const missing_fields: (string | number) [] = []
-        //Check for missing or empty sections. 
-        for(let i = 0; i < ){
-        
-            if( || key === ""){
-                missing_fields.push(key);
-            }
-        }
-    //If array contains missing fields
+    //Grab correct reference schema and parse proposal 
+    const ParsedProposal = JSON.parse(proposal);
+    const ReferenceSchema = AgentProposalSchema.options.find(schema => schema.shape.action === ParsedProposal.action);
+    const ParsedRef  =  ReferenceSchema?.shape;
 
-    if(missing_fields.length() > 0){
-        const missing_string: string = missing_fields.toString();
+
+    //Reference Incoming Proposal against Correct Schema for missing units. 
+    for (const key in ParsedRef) {
+        if (ParsedProposal[key] === undefined || ParsedProposal[key] === null || ParsedProposal[key] === "" ) {
+            missing_fields.push(key);
+        }
+    }
+
+    //If there are 1 or more missing fields, return error response with list of missing fields.
+    if (missing_fields.length > 0) {
+        const missing_string = missing_fields.join(", ");
         return { 
             schema_version: schema_version,
             id: crypto.randomUUID(),

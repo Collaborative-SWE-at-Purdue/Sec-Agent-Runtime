@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { filter } from "./ProposalErrorRegistry.js"
+import { filter } from "./ProposalErrorConfig.js"
 
 
 // Base structure for validation error responses sent back to agent
@@ -57,13 +57,13 @@ export const GateList = z.discriminatedUnion("ErrorId", [
     }),
 
     //Invalid Content Check - Catchall
-     Base.extend({
-        ErrorId: z.literal(filter.INVALID_CONTENT),
-        args: z.object({
-            field: z.string(), // Which field is missing
-            message: z.literal("Required ${fields} is Invalid") // Description of the missing content
-        }).strict()
-    })
+    //  Base.extend({
+    //     ErrorId: z.literal(filter.INVALID_CONTENT),
+    //     args: z.object({
+    //         field: z.string(), // Which field is missing
+    //         message: z.literal("Required ${field} is Invalid") // Description of the missing content
+    //     }).strict()
+    // })
 ]);
 
 export type GateError = z.infer<typeof GateList>;
