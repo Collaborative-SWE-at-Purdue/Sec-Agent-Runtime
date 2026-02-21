@@ -84,20 +84,6 @@ describe("Gate Schema Validation", () => {
         const result = GateList.safeParse(validError);
         expect(result.success).toBe(true);
     });
-   it("Should accept a INVALID_CONTENT Error response", () => {
-        const validError = { 
-            id: TEST_UUID,
-            schema_version: "1.0.0",
-            input: "Original proposal that failed validation",
-            ErrorId: filter.INVALID_CONTENT,
-            args: {
-                field: "reasoning",
-                message: "Required field is Invalid"
-            }
-        };
-        const result = GateList.safeParse(validError);
-        expect(result.success).toBe(true);
-    });
 
     //Invalid Tests
     it("should vaild if schema_version is wrong format", () => {

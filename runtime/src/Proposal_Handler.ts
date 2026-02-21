@@ -1,30 +1,57 @@
 import * as z from "zod";
-import { filter,valid_ascii, proposal_limit, schema_version, TEST_UUID } from "../../sys-common/schemas/ProposalErrorConfig.js";
+import * as config from "../../sys-common/schemas/ProposalErrorConfig.js";
 import { GateList } from "../../sys-common/schemas/ProposalErrorSchema.js";
 import {AgentProposalSchema} from "../../sys-common/schemas/ProposalSchema.js"
+import * as fs from 'fs'; // Import the Node.js File System module
 import { Agent } from "node:http";
+import { log } from "node:console"; 
+import { V } from "vitest/dist/chunks/evaluatedModules.d.BxJ5omdx.js";
 
 
 //Proposal Error handling logic for incoming proposals.
 //This should be done in Typescript PascalCase for better readability and maintainability.
 
 
-function ValidateProposal(proposal: string) {
+export function ValidateProposal(proposal: string) {
     // Check for null byte characters
+
+    const nullByteError = ValidateNullByte(proposal);
+    if (nullByteError) {
+        let stringifiedError = JSON.stringify(nullByteError);
+        LogError(stringifiedError);
+        return nullByteError;
+    }
+
+    // Check for valid ASCII characters
+    const asciiError = ValidateASCII(proposal);
+    if (asciiError) {
+        return asciiError;
+    }
+
+    // Check for payload size
+    const payloadError = validatePayloadSize(proposal);
+    if (payloadError) {
+        return payloadError;
+    }
     
+    // Check for ID Collision
+    const idCollisionError = ValidateIDCollision(proposal);
+    if (idCollisionError) {
+        return idCollisionError;
+    }
+
     
 };
     
     
     
-    
- function ValidateNullByte(proposal: string) {  
-     if (proposal.includes("\0")) {
+function ValidateNullByte(proposal: string) {  
+    if (proposal.includes("\0")) {
         return { 
-            schema_version: schema_version,
+            schema_version: config.schema_version,
             id: crypto.randomUUID(),
             input: proposal,
-            ErrorId: filter.NULL_BYTE,
+            ErrorId: config.filter.NULL_BYTE,
             args: {
                 message: "Cannot contain null byte characters"
             }
@@ -33,12 +60,12 @@ function ValidateProposal(proposal: string) {
  };
     // Check for valid ASCII characters
 function ValidateASCII(proposal: string) {
-    if (!valid_ascii.test(proposal)) {
+    if (!config.valid_ascii.test(proposal)) {
         return { 
-            schema_version: schema_version,
+            schema_version: config.schema_version,
             id: crypto.randomUUID(),
             input: proposal,
-            ErrorId: filter.INVALID_ASCII,
+            ErrorId: config.filter.INVALID_ASCII,
             args: {
                 message: "Cannot contain invalid ASCII characters"
             }
@@ -51,12 +78,12 @@ function validatePayloadSize(proposal: string) {
     //Convert Proposal to bytes
     const ProposalByteSize = (str:string) => new TextEncoder().encode(str).length;
     //Check if proposal exceeds limit
-    if (ProposalByteSize(proposal) > proposal_limit ) {
+    if (ProposalByteSize(proposal) > config.proposal_limit ) {
         return { 
-            schema_version: schema_version,
+            schema_version: config.schema_version,
             id: crypto.randomUUID(),
             input: proposal,
-            ErrorId: filter.PAYLOAD_OVERFLOW,
+            ErrorId: config.filter.PAYLOAD_OVERFLOW,
             args: {
                 size: ProposalByteSize(proposal),
                 limit: 1024,
@@ -73,14 +100,14 @@ but eventually this should be checking against a
 database/logfile of logged proposal IDs.*/
 
 function ValidateIDCollision (proposal: string) {
-    const backlogIDs: string[] = [TEST_UUID]; // This should be replaced with actual backlog data source
+    const backlogIDs: string[] = [config.TEST_UUID]; // This should be replaced with actual backlog data source
 
     if (backlogIDs.includes(proposal)) {
         return { 
-            schema_version: schema_version,
+            schema_version: config.schema_version,
             id: crypto.randomUUID(),
             input: proposal,
-            ErrorId: filter.ID_COLLISION,
+            ErrorId: config.filter.ID_COLLISION,
             args: {
                 incoming: proposal,
                 backlog: backlogIDs.find(id => id === proposal) || "",
@@ -110,14 +137,16 @@ function ValidateCoreStructure(proposal:string) {
         }
     }
 
+
+
     //If there are 1 or more missing fields, return error response with list of missing fields.
     if (missing_fields.length > 0) {
         const missing_string = missing_fields.join(", ");
         return { 
-            schema_version: schema_version,
+            schema_version: config.schema_version,
             id: crypto.randomUUID(),
             input: proposal,
-            ErrorId: filter.MISSING_CONTENT,
+            ErrorId: config.filter.MISSING_CONTENT,
             args: {
                 fields: missing_string,
                 message: "Required field is missing or empty"
@@ -127,4 +156,32 @@ function ValidateCoreStructure(proposal:string) {
     }
 
 }
+
+
+//Logs the Error, no need for schema now.
+function LogError(error:string) {
+    //Creates Timstamp for Log Entry and finds ErrorID
+    const TimeStamp = new Date().toISOString();
+    const ErrorType = JSON.parse(error).id || "UNKNOWN_ERROR_ID";
+
+    //Constructs Log Entry Object
+    const LogEntry = {
+        log_schema_version: config.log_schema_version,
+        severity:config.LogSeverity.LOW,
+        timestamp: TimeStamp,
+        args: {
+             message: `Error ID: ${ErrorType} | Log found in: ${config.ERROR_LOG_PATH}`,
+             error: error
+        }
+     };
+
+
+    //Append Log Entry to Log File
+    try {
+        fs.appendFileSync(config.ERROR_LOG_PATH, JSON.stringify(LogEntry) + "\n");
+    } catch (err) {
+        console.error("Failed to log error:", err);
+    }
+}
+
 
