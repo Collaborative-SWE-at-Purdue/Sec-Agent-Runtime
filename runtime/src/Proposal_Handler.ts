@@ -3,20 +3,17 @@ import * as config from "../../sys-common/schemas/ProposalErrorConfig.js";
 import { GateList } from "../../sys-common/schemas/ProposalErrorSchema.js";
 import {AgentProposalSchema} from "../../sys-common/schemas/ProposalSchema.js"
 import * as fs from 'fs'; // Import the Node.js File System module
-import { Agent } from "node:http";
-import { log } from "node:console"; 
-import { V } from "vitest/dist/chunks/evaluatedModules.d.BxJ5omdx.js";
 
-
-//Proposal Error handling logic for incoming proposals.
+//Proposal Error handling logic for incoming proposals. As of now it simply defines the proposal type and logs it. 
 //This should be done in Typescript PascalCase for better readability and maintainability.
 
-
+//Eventually we want to return the error to the LLM, and Log it. FOr now it just returns it. 
 export function ValidateProposal(proposal: string) {
     // Check for null byte characters
 
     const nullByteError = ValidateNullByte(proposal);
     if (nullByteError) {
+        //This is so sloppy please fix. 
         let stringifiedError = JSON.stringify(nullByteError);
         LogError(stringifiedError);
         return nullByteError;
@@ -25,18 +22,24 @@ export function ValidateProposal(proposal: string) {
     // Check for valid ASCII characters
     const asciiError = ValidateASCII(proposal);
     if (asciiError) {
+        let stringifiedError = JSON.stringify(asciiError);
+        LogError(stringifiedError);
         return asciiError;
     }
 
     // Check for payload size
     const payloadError = validatePayloadSize(proposal);
     if (payloadError) {
+        let stringifiedError = JSON.stringify(payloadError);
+        LogError(stringifiedError);
         return payloadError;
     }
     
     // Check for ID Collision
     const idCollisionError = ValidateIDCollision(proposal);
     if (idCollisionError) {
+        let stringifiedError = JSON.stringify(idCollisionError);
+        LogError(stringifiedError);
         return idCollisionError;
     }
 
