@@ -2,13 +2,14 @@
 
 ### Overview
 
-The system consists of three main components:
+The system consists of two main components:
 
-- **User**: Provides high-level goals in natural language
 - **Agent (LLM)**: The agent serves as a bidirectional interface between the user and the runtime.
-- **Runtime**: Enforces policy and executes actions
+- **Runtime**: validates, authorizes, executes, and logs actions.
 
 The runtime treats the agent as **untrusted** and enforces strict validation and authorization on all actions.
+The system operates as a request–response loop between the agent and the runtime:
+Agent → INPUT → Runtime → RESPONSE → Agent
 
 ---
 
@@ -16,25 +17,24 @@ The runtime treats the agent as **untrusted** and enforces strict validation and
 
 The overall interaction follows this flow:
 
-User → Agent → Proposal → Runtime → Response → Agent → User
+Agent → INPUT → Runtime → RESPONSE → Agent
 
-1. The user provides instruction in natural language
-2. The agent (LLM) interprets the instruction and generates a structured proposal (JSON)
-3. The proposal is sent to the runtime
-4. The runtime validates, authorizes, and executes the request
-5. The runtime returns a response
-6. The agent interprets the response and may generate further proposals
-7. The final result is returned to the user
+1. The agent generates a structured input (JSON)
+2. The input is sent to the runtime
+3. The runtime processes the input through a deterministic execution pipeline
+4. The runtime produces a decision:
+   - **ALLOW** if all validation and policy checks pass
+   - **DENY** if any validation or policy check fails
+5. The runtime records the full processing details in an internal log
+6. The runtime returns a minimal response containing the decision (ALLOW or DENY)
+7. The agent may generate further inputs based on the response, forming a loop
+
+The response only exposes the decision (ALLOW or DENY), while detailed failure information is recorded in the internal audit log and not exposed to the agent.
 
 ---
 
 ### Roles and Responsibilities
 
-#### User
-
-- Provides high-level goals or instructions
-- Does not directly interact with the runtime
-- Does not construct proposals
 
 #### Agent (LLM)
 
