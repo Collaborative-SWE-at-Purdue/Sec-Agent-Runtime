@@ -61,9 +61,6 @@ export const AgentProposalSchema = z.discriminatedUnion("action", [
         message: "RENAME_FILE destination is restricted to .txt and .md"
       })
     }).strict()
-  }).refine(data => getExt(data.args.source) === getExt(data.args.destination), {
-    message: "RENAME_FILE source and destination extensions must match",
-    path: ["args", "destination"]
   }),
 
   Base.extend({

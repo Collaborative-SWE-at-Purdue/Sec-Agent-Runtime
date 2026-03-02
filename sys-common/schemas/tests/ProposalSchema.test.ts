@@ -280,23 +280,20 @@ describe("Agent Action Request Security & Validation", () => {
     expect(result.success).toBe(false);
   });
 
-  // RENAME_FILE Extension Parity (Negative Case)
-  it("should reject RENAME_FILE with mismatching extensions (.txt -> .md)", () => {
-    const invalidProposal = {
+  // RENAME_FILE Cross-Extension Test (Positive Case)
+  it("should accept RENAME_FILE with mismatching but safe extensions (.txt -> .md)", () => {
+    const validProposal = {
       id: TEST_UUID,
       schema_version: "1.0.0",
-      reasoning: "Attempting to change file type during rename",
+      reasoning: "Changing file type during rename",
       action: ActionType.RENAME_FILE,
       args: {
         source: "/sandbox/notes.txt",
         destination: "/sandbox/notes.md"
       }
     };
-    const result = AgentProposalSchema.safeParse(invalidProposal);
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error.issues[0]?.message).toContain("extensions must match");
-    }
+    const result = AgentProposalSchema.safeParse(validProposal);
+    expect(result.success).toBe(true);
   });
 
   // THINK strictness

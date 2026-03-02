@@ -143,7 +143,7 @@ describe('File Actions (Primitives)', () => {
             const mockDirents = [
                 { name: 'file1.txt', isDirectory: () => false, isFile: () => true, isSymbolicLink: () => false },
                 { name: 'dir1', isDirectory: () => true, isFile: () => false, isSymbolicLink: () => false }
-            ] as fs.Dirent[];
+            ] as any[];
             vi.mocked(fs.readdir).mockResolvedValueOnce(mockDirents);
             const result = await listFiles(mockProposalId, { path: '/sandbox/dir' });
 
