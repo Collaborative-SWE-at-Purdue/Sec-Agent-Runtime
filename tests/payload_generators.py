@@ -26,6 +26,9 @@ def create_valid_read_payload(path: str = "/sandbox/test.md") -> dict:
 def create_valid_write_payload(path: str = "/sandbox/test.txt", content: str = "Hello World!") -> dict:
     return create_base_payload("WRITE_FILE", {"path": path, "content": content}, f"Writing to {path}")
 
+def create_valid_list_payload(path: str = "/sandbox/empty_dir") -> dict:
+    return create_base_payload("LIST_FILES", {"path": path}, f"Listing {path}")
+
 # --- Adversarial Generators ---
 
 def mutate_invalid_json() -> str:

@@ -18,7 +18,7 @@ class TestSimulationHarness(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Create a physical sandbox environment for the runtime to interact with."""
-        cls.sandbox_dir = os.path.abspath("/sandbox")
+        cls.sandbox_dir = os.path.abspath("./local_sandbox")
         os.makedirs(cls.sandbox_dir, exist_ok=True)
         
         # Create necessary mock files
@@ -124,11 +124,11 @@ class TestSimulationHarness(unittest.TestCase):
         
     # --- 4. Execution Edge Cases ---
     
-    def test_edge_case_read_empty_directory(self):
-        # Trying to read a directory as a file
-        payload = create_valid_read_payload(path="/sandbox/empty_dir")
+    def test_edge_case_list_empty_directory(self):
+        payload = create_valid_list_payload(path="/sandbox/empty_dir")
         resp = self._execute_and_track(payload)
         self.assertEqual(resp.get("outcome"), "EXECUTION_ERROR")
+        self.assertEqual(resp.get("error", {}).get("message"), "Directory is empty")
         
     # --- 5. Stress Testing ---
     
