@@ -164,4 +164,4 @@ htmlcov/
 *.swo
 
 # Test output
-test_output.txt
+metrics.txt
