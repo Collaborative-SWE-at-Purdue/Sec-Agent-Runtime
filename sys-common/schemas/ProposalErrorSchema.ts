@@ -7,7 +7,7 @@ import { ProposalErrorCode } from "./ProposalErrorConfig.js"
 const Base = z.object({
     schema_version: z.string().regex(/^1\.\d+\.\d+$/),
     id: z.string().uuid().default(() => crypto.randomUUID()),
-    input: z.any(), // Original proposal that failed validation
+    input: z.any().refine(val => val !== "", { message: "Input cannot be empty" }), // Original proposal that failed validation
 });
 
 export const GateList = z.discriminatedUnion("ErrorId", [
@@ -52,7 +52,7 @@ export const GateList = z.discriminatedUnion("ErrorId", [
         ErrorId: z.literal(ProposalErrorCode.MISSING_CONTENT),
         args: z.object({
             field: z.string(), // Which field is missing
-            message: z.literal("Required field is missing or empty") // Description of the missing content
+            message: z.literal("Required field is missing or incorrectly formatted") // Description of the missing content
         }).strict()
     }),
 

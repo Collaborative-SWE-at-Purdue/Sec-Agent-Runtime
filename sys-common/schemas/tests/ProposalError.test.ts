@@ -61,7 +61,6 @@ describe("Gate Schema Validation", () => {
             ErrorId: ProposalErrorCode.ID_COLLISION,
             args: {
                 incoming: TEST_UUID,
-                backlog: TEST_UUID,
                 message: "ID matches with previously logged proposal ID"
             }
         };
@@ -77,7 +76,7 @@ describe("Gate Schema Validation", () => {
             ErrorId: ProposalErrorCode.MISSING_CONTENT,
             args: {
                 field: "reasoning",
-                message: "Required field is missing or empty"
+                message: "Required field is missing or incorrectly formatted"
             }
         };
         const result = GateList.safeParse(validError);

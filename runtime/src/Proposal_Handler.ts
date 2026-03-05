@@ -1,15 +1,18 @@
 import * as z from "zod";
 import * as config from "../../sys-common/schemas/ProposalErrorConfig.js";
-import { GateError } from "../../sys-common/schemas/ProposalErrorSchema.js";
-import {AgentProposalSchema} from "../../sys-common/schemas/ProposalSchema.js";
+import { GateError, GateList } from "../../sys-common/schemas/ProposalErrorSchema.js";
+import { AgentProposal, AgentProposalSchema} from "../../sys-common/schemas/ProposalSchema.js";
 import * as fs from 'fs'; // Import the Node.js File System module
 import { objectProcessor } from "zod/v4/core/json-schema-processors.cjs";
+import { Agent } from "http";
 //Proposal Error handling logic for incoming proposals. As of now it simply defines the proposal type and logs it. 
 //This should be done in Typescript PascalCase for better readability and maintainability.
 
 
+type proposal_type = AgentProposal;
+
 //Eventually we want to return the error to the LLM, and Log it. FOr now it just returns it. 
-export function ValidateProposal(proposal: GateError ) {
+export function ValidateProposal(proposal: proposal_type ) {
     // Check for null byte characters
     
     const nullByteError = ValidateNullByte(proposal);
@@ -35,16 +38,19 @@ export function ValidateProposal(proposal: GateError ) {
     if (idCollisionError) {
         return idCollisionError;
     }
-
+    const CoreStructure = ValidateCoreStructure(proposal);
+    if (CoreStructure) {
+        return CoreStructure;
+    }
     LogID(proposal.id);
 };
     
     
     
-function ValidateNullByte(proposal: GateError) {  
+function ValidateNullByte(proposal: proposal_type) {  
 
     for(const value of Object.values(proposal)){
-        if (value.type == "string" &&value.includes("\0")) {
+        if (typeof value === "string" && value.includes("\0")) {
             let error : GateError = { 
                 schema_version: config.schema_version,
                 id: crypto.randomUUID(),
@@ -62,7 +68,7 @@ function ValidateNullByte(proposal: GateError) {
  };
 
     // Check for valid ASCII characters
-function ValidateASCII(proposal: GateError) {
+function ValidateASCII(proposal: proposal_type) {
     for(const value of Object.values(proposal)){
         if (!config.valid_ascii.test(value)) {
             let error : GateError = { 
@@ -80,7 +86,7 @@ function ValidateASCII(proposal: GateError) {
 
 };
 // Check for payload size
-function validatePayloadSize(proposal: GateError) {
+function validatePayloadSize(proposal: proposal_type) {
     //Convert Proposal to bytes
     const proposal_bytes = new TextEncoder().encode(JSON.stringify(proposal)).byteLength;
 
@@ -107,7 +113,7 @@ function validatePayloadSize(proposal: GateError) {
 but eventually this should be checking against a 
 database/logfile of logged proposal IDs.*/
 
-function ValidateIDCollision (proposal: GateError) {
+function ValidateIDCollision (proposal: proposal_type) {
     // Load previously seen IDs from the ID log
     let backlogIDs: string[] = [];
     try {
@@ -137,24 +143,22 @@ function ValidateIDCollision (proposal: GateError) {
 
 //Check for invalid strucure.
 
-function ValidateCoreStructure(proposal:string) {
+function ValidateCoreStructure(proposal: proposal_type) {
     //Missing Fields Check - Our Schema is only comprised of strings and numbers ATP.
-    const missing_fields: (string | number) [] = []
-    //Grab correct reference schema and parse proposal 
-    const ParsedProposal = JSON.parse(proposal);
-    const ReferenceSchema = AgentProposalSchema.options.find(schema => schema.shape.action === ParsedProposal.action);
-    const ParsedRef  =  ReferenceSchema?.shape;
+    //Right now it is only going to check to make sure fields are missing, initial schema checks for the other stuff
+    const missing_fields: string[] = []
+    
 
-
-    //Reference Incoming Proposal against Correct Schema for missing units. 
-    for (const key in ParsedRef) {
-        if (ParsedProposal[key] === undefined || ParsedProposal[key] === null || ParsedProposal[key] === "" ) {
+    
+    for (const [key, value] of Object.entries(proposal)) {
+        if (value === undefined || value === null || value === "") {
             missing_fields.push(key);
         }
     }
 
-
-
+    if (proposal.schema_version !== config.schema_version) {
+        missing_fields.push("schema_version");
+    }
     //If there are 1 or more missing fields, return error response with list of missing fields.
     if (missing_fields.length > 0) {
         const missing_string = missing_fields.join(", ");
@@ -165,7 +169,7 @@ function ValidateCoreStructure(proposal:string) {
             ErrorId: config.ProposalErrorCode.MISSING_CONTENT,
             args: {
                 field: missing_string,
-                message: "Required field is missing or empty"
+                message: "Required field is missing or incorrectly formatted"
             }
         }
         return error;
