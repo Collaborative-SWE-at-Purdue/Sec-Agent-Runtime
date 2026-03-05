@@ -175,13 +175,13 @@ describe("Proposal Handler Validation Tests", () => {
     describe("ValidateCoreStructure", () => {
 
         it("should return MISSING_CONTENT error for proposals with an incorrect schema version", () => {
-            const wrongVersionProposal = {
+            const wrongVersionProposal: AgentProposal = {
                 schema_version: "2.0.0",
-                id: "523e4567-e89b-12d3-a456-426614174000",
+                id: "",
                 reasoning: "Wrong schema version.",
                 action: ActionType.THINK,
                 args: {}
-            } as AgentProposal;
+            };
 
             const expectedError = {
                 schema_version: "1.0.0",
@@ -189,7 +189,7 @@ describe("Proposal Handler Validation Tests", () => {
                 input: wrongVersionProposal,
                 ErrorId: ProposalErrorCode.MISSING_CONTENT,
                 args: {
-                    field: "schema_version",
+                    field: ["id","schema_version"].join(", "),
                     message: "Required field is missing or incorrectly formatted"
                 }
             };
